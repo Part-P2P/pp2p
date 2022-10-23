@@ -28,7 +28,7 @@ class pp2p {
   connect(peer) {
     this.connection = peer.connect(this.id);
     this.connection.on('open', function() {
-      this.connection.send({"scope" => "pp2p.connection", "content":"NIL"});
+      this.connection.send({"scope": "pp2p.connection", "content":"NIL"});
     });
     this.connection.on('data', function(data) {
       if ((JSON.parse(data)).scope == "pp2p.connection" && (JSON.parse(data)).content == "DONE") {
@@ -55,7 +55,7 @@ class pp2p {
         this.log(1, 'Response received, analyzing content');
         var localPing = this.ping();
         
-        if (JSON.parse(data)).content > localPing) {
+        if (JSON.parse(data).content > localPing) {
           this.dominant = false;
           this.connection.send({"scope":"pp2p.dominant", "content":true});
           this.log(1, 'Not dominant, send to 2nd client a dominant confirm');
