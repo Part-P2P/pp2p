@@ -19,10 +19,6 @@ class PP2P {
       return response;
   }
   
-  getID() {
-    return this.peer._id;
-  }
-  
   ping() {
     const start = Date.now();
     var res = this.getURL(this.server);
@@ -50,7 +46,8 @@ class PP2P {
     this.id = id;
     this.connection = this.peer.connect(this.id);
     this.log(1, 'Prepare to ConnectionEvent message');
-    this.connection.on('open', function() {
+    this.connection.on('open', sendConnection());
+    function sendConnection() {
       this.getConnection().send('uiwu');
       this.log(1, 'ConnectionContent sent');
     });
