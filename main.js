@@ -66,7 +66,7 @@ class PP2P {
         this.connection = false;
         return false;
       }
-    });  
+    }
   } 
   
   validateConnection() {
