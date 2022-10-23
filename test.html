@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <script src='/main.js'></script>
+  <script src='/commonjs.js'></script>
+  <script src='https://resources.fcosma.it/js/peer.js'></script>
+ 
+  <body>
+    
+    <span id='id'></span><br><br>
+    <input type='text' id='text'><br><br>
+    
+    <button onclick='doConnect()'>C</button>
+    
+    <script>
+      function _(e) {
+        return document.getElementById(e);
+      }
+      
+      const pp2p = new pp2p();
+     
+      _('id').innerHTML = pp2p.getID();
+      
+      function doConnect() {
+        pp2p.connect(_('text').value);
+      }
+      
+      document.addEventListener('client', function(data) {
+        console.log(data.detail);
+      });
+      
+    </script>
+  </body>
+</html>
+      
