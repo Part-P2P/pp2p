@@ -46,9 +46,10 @@ class PP2P {
     this.id = id;
     this.connection = this.peer.connect(this.id);
     this.log(1, 'Prepare to ConnectionEvent message');
+    var conn = this.connection;
     this.connection.on('open', sendConnection());
     function sendConnection() {
-      this.getConnection().send('uiwu');
+      conn.send('uiwu');
       this.log(1, 'ConnectionContent sent');
     }
     this.connection.on('data', function(data) {
