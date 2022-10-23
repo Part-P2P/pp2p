@@ -4,7 +4,7 @@ class PP2P {
     this.id = id;
     this.peer = new Peer();
     
-    this.peer.on('open') function(id) {
+    this.peer.on('open', function(id) {
       this.myid = id;
       CommonJS.makeEvent(document, 'pp2pOn', {"detail":id});
     });
