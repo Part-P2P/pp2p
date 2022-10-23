@@ -108,7 +108,10 @@ tempPP2P.peer.on('open', function(id) {
 });
 
 tempPP2P.peer.on('connection', function(connection) {
-  connection.on('data', loadData(data));
+  connection.on('data', function(data) {
+    loadData(data));
+  });
+  
   if (tempPP2P.connection == undefined || tempPP2P.connection != connection) {
     tempPP2P.connection = connection;
   }
