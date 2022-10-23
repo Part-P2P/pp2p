@@ -55,7 +55,7 @@ class PP2P {
       console.log('happ');
     }
     this.connection.on('data', function(data) {
-      if (JSON.parse(data).scope == "pp2p" && JSON.parse(data).do == "connection" && JSON.parse(data).content == "DONE") {
+      if (data.scope == "pp2p" && data.do == "connection" && data.content == "DONE") {
         this.log(1, 'Connection enstabilished, now declaring dominant server!');
         this.validateConnection();
       } else {
@@ -74,11 +74,11 @@ class PP2P {
     this.connection.send({"scope":"pp2p", "do":"ping", "content":"ConnectionEnstabilished"});
     this.log(1, "PingScope (PP2P) message P2P sent, awaiting response from upstream");
     this.connection.on('data', function(data) {
-      if (JSON.parse(data).scope == "pp2p" && JSON.parse(data).do == "pingResponse") {
+      if (data.scope == "pp2p" && data.do == "pingResponse") {
         this.log(1, 'Response received, analyzing content');
         var localPing = this.ping();
         
-        if (JSON.parse(data).content > localPing) {
+        if (data.content > localPing) {
           this.dominant = false;
           this.connection.send({"scope":"pp2p", "do":"dominant", "content":true});
           this.log(1, 'Not dominant, send to 2nd client a dominant confirm');
