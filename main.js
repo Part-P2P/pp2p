@@ -1,7 +1,7 @@
 class PP2P {
-  constructor(peer, server) {
+  constructor(server) {
     this.server = server;
-    this.peer = peer;
+    this.peer = new Peer();
   }
   
   async getURL(url) {
@@ -100,7 +100,7 @@ class PP2P {
   }
 }
 
-const tempPP2P = new PP2P(new Peer(), '');
+const tempPP2P = new PP2P('');
 
 tempPP2P.peer.on('open', function(id) {
   tempPP2P.myid = id;
