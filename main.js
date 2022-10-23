@@ -50,7 +50,7 @@ class PP2P {
     function sendConnection() {
       this.getConnection().send('uiwu');
       this.log(1, 'ConnectionContent sent');
-    });
+    }
     this.connection.on('data', function(data) {
       if (JSON.parse(data).scope == "pp2p" && JSON.parse(data).do == "connection" && JSON.parse(data).content == "DONE") {
         this.log(1, 'Connection enstabilished, now declaring dominant server!');
