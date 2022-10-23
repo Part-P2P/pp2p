@@ -55,6 +55,10 @@ class PP2P {
       console.log('happ');
     }
     this.connection.on('data', function(data) {
+      receiveDataMethod(data);
+    });
+    
+   function receiveDataMethod(data) {
       if (data.scope == "pp2p" && data.do == "connection" && data.content == "DONE") {
         this.log(1, 'Connection enstabilished, now declaring dominant server!');
         this.validateConnection();
