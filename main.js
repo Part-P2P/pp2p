@@ -45,9 +45,9 @@ class PP2P {
   connect(id) {
     this.id = id;
     this.connection = this.peer.connect(this.id);
-    this.connection.on('open', sendMessageTemp());
-    function sendMessageTemp() {
-      this.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
+    this.connection.on('open', sendMessageTemp(this.connection));
+    function sendMessageTemp(method) {
+      method.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
     }
     this.connection.on('data', function(data) {
       if (JSON.parse(data).scope == "pp2p" && JSON.parse(data).do == "connection" && JSON.parse(data).content == "DONE") {
