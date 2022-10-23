@@ -16,7 +16,7 @@
         return document.getElementById(e);
       }
       
-      const pp2p = new PP2P();
+      const pp2p = new PP2P(new Peer(), '');
      
       document.addEventListener('pp2pOn', function(el) {
         _('id').innerHTML = el.detailM
