@@ -19,7 +19,8 @@
       const pp2p = new PP2P(new Peer(), '');
      
       document.addEventListener('pp2pOn', function(el) {
-        _('id').innerHTML = el.detailM
+        console.log(el);
+        _('id').innerHTML = el.detail;
       });
       
       function doConnect() {
