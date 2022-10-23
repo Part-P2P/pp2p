@@ -50,7 +50,6 @@ class PP2P {
     this.connection.on('open', sendConnection());
     function sendConnection() {
       conn.send('uiwu');
-      this.log(1, 'ConnectionContent sent');
     }
     this.connection.on('data', function(data) {
       if (JSON.parse(data).scope == "pp2p" && JSON.parse(data).do == "connection" && JSON.parse(data).content == "DONE") {
