@@ -104,7 +104,6 @@ const tempPP2P = new PP2P('');
 
 tempPP2P.peer.on('open', function(id) {
   tempPP2P.myid = id;
-  tempPP2P.log(3, 'ID: ' + id);
   CommonJS.makeEvent(document, 'pp2pOn', {"detail":id});
 });
 
