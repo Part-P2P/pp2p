@@ -11,7 +11,7 @@ class pp2p {
       }
     });
     
-    loadData(data) {
+    function loadData(data) {
       var get = JSON.parse(data);
       if (get.scope == "client") {
         CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
