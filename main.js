@@ -6,6 +6,9 @@ class pp2p {
     
     this.peer.on('connection', function(connection) {
       connection.on('data', sys(data));
+      if (this.connection == undefined || this.connection != connection) {
+        this.connection = connection;
+      }
     });
     
     function sys(data) {
@@ -75,8 +78,8 @@ class pp2p {
     window.console.log("[PP2P.js]" + type + " >> " + message);
   }
  
-  connect(peer) {
-    this.connection = peer.connect(this.id);
+  connect() {
+    this.connection = this.peer.connect(this.id);
     this.connection.on('open', function() {
       this.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
     });
@@ -116,5 +119,18 @@ class pp2p {
         return this.connection;
       }
     });
+  }
+  
+  send(scope, message, customServer) {
+    customServer = customServer ?? '';
+    if (scope == "client") {
+      this.connection.send({"scope":"client","content":message});
+    } else if (scope == "customServer") {
+      this.connection.send({"scope":"customServer", "content":message});
+    } else if (scope == "server") {
+      this.connection.send({"scope":"server", "content":message});
+    } else {
+      this.log('Unexpected scope');
+    }
   }
 }
