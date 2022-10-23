@@ -3,11 +3,12 @@ class pp2p {
     this.server = server;
     this.id = id;
     this.peer = new Peer();
+    
     this.peer.on('connection', function(connection) {
-      this.connection = connection;
+      connection.on('data', sys(data));
     });
     
-    this.connection.on('data', function(data) {
+    function sys(data) {
       var get = JSON.parse(data);
       if (get.scope == "client") {
         CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
@@ -29,10 +30,15 @@ class pp2p {
           this.connection.send({"scope":"pp2p", "do":"pingResponse", "content":ping});
         } else if (get.do == "connection") {
           this.connection.send({"scope":"pp2p", "do":"connection", "content":"DONE"});
-                               
+        } else if (get.do == "dominant") {
+          if (get.do.content) {
+            this.dominant = true;
+          } else {
+            this.dominant = false;
+          }
         }
       }
-    });
+    }
   }
   
   async getURL(url) {
@@ -107,7 +113,6 @@ class pp2p {
           this.connection.send({"scope":"pp2p", "do":"dominant", "content":false});
           this.log(1, 'Dominant, send to 2nd client a not-dominant confirm');
         }
-        
         return this.connection;
       }
     });
