@@ -1,7 +1,6 @@
 class PP2P {
-  constructor(server, id) {
+  constructor(server) {
     this.server = server;
-    this.id = id;
     this.peer = new Peer();
   }
   
@@ -12,7 +11,7 @@ class PP2P {
   }
   
   async postURL(url, headers, jsoncontent) {
-    var response = await fetch("https://fcosma.it/ip", {
+    var response = await fetch(url, {
       method: 'POST',
       headers: headers,
       body: jsoncontent
@@ -43,7 +42,8 @@ class PP2P {
     window.console.log("[PP2P.js]" + type + " >> " + message);
   }
  
-  connect() {
+  connect(id) {
+    this.id = id;
     this.connection = this.peer.connect(this.id);
     this.connection.on('open', function() {
       this.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
@@ -99,6 +99,9 @@ class PP2P {
     }
   }
 }
+
+const tempPP2P = new PP2P('');
+
 tempPP2P.peer.on('open', function(id) {
   tempPP2P.myid = id;
   CommonJS.makeEvent(document, 'pp2pOn', {"detail":id});
