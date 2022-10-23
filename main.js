@@ -1,4 +1,4 @@
-class pp2p {
+class PP2P {
   constructor(server, id) {
     this.server = server;
     this.id = id;
