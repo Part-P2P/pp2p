@@ -5,13 +5,13 @@ class pp2p {
     this.peer = new Peer();
     
     this.peer.on('connection', function(connection) {
-      connection.on('data', sys(data));
+      connection.on('data', loadData(data));
       if (this.connection == undefined || this.connection != connection) {
         this.connection = connection;
       }
     });
     
-    function sys(data) {
+    loadData(data) {
       var get = JSON.parse(data);
       if (get.scope == "client") {
         CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
@@ -57,6 +57,10 @@ class pp2p {
       body: jsoncontent
     }).then((r)=>{return r.text()})
       return response;
+  }
+  
+  getID() {
+    return this.peer._id;
   }
   
   ping() {
