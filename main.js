@@ -99,15 +99,15 @@ class PP2P {
     }
   }
 }
-this.peer.on('open', function(id) {
-  this.myid = id;
+tempPP2P.peer.on('open', function(id) {
+  tempPP2P.myid = id;
   CommonJS.makeEvent(document, 'pp2pOn', {"detail":id});
 });
 
-this.peer.on('connection', function(connection) {
+tempPP2P.peer.on('connection', function(connection) {
   connection.on('data', loadData(data));
-  if (this.connection == undefined || this.connection != connection) {
-    this.connection = connection;
+  if (tempPP2P.connection == undefined || tempPP2P.connection != connection) {
+    tempPP2P.connection = connection;
   }
 });
 
@@ -117,27 +117,27 @@ function loadData(data) {
     CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
   } else if (get.scope == "customServer") {
     if (get.content.type = "GET") {
-      var response = this.getURL(get.content.url);
-      this.connection.send({"scope":"response", "content":response});
+      var response = tempPP2P.getURL(get.content.url);
+      tempPP2P.connection.send({"scope":"response", "content":response});
     } else if (get.content.type = "POST") {
-      var response = this.postURL(get.content.url, get.content.headers, get.content.body);
-      this.connection.send({"scope":"response", "content":response});
+      var response = tempPP2P.postURL(get.content.url, get.content.headers, get.content.body);
+      tempPP2P.connection.send({"scope":"response", "content":response});
     } else {
-      this.log(2, 'Undefined requestType (customServer.type)');
+      tempPP2P.log(2, 'Undefined requestType (customServer.type)');
     }
   } else if (get.scope == "response") {
     CommonJS.makeEvent(document, 'serverData', {"detail":get.content});
   } else if (get.scope == "pp2p" && get.do != undefined) {
     if (get.do == "ping") {
-      var ping = this.ping();
-      this.connection.send({"scope":"pp2p", "do":"pingResponse", "content":ping});
+      var ping = tempPP2P.ping();
+      tempPP2P.connection.send({"scope":"pp2p", "do":"pingResponse", "content":ping});
     } else if (get.do == "connection") {
-      this.connection.send({"scope":"pp2p", "do":"connection", "content":"DONE"});
+      tempPP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"DONE"});
     } else if (get.do == "dominant") {
       if (get.do.content) {
-        this.dominant = true;
+        tempPP2P.dominant = true;
       } else {
-        this.dominant = false;
+        tempPP2P.dominant = false;
       }
     }
   }
