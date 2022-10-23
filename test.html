@@ -18,7 +18,9 @@
       
       const pp2p = new PP2P();
      
-      _('id').innerHTML = pp2p.getID();
+      document.addEventListener('pp2pOn', function(el) {
+        _('id').innerHTML = el.detailM
+      }
       
       function doConnect() {
         pp2p.connect(_('text').value);
