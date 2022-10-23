@@ -124,6 +124,7 @@ tempPP2P.peer.on('connection', function(connection) {
 });
 
 function loadData(data) {
+  console.log(data);
   var get = JSON.parse(data);
   if (get.scope == "client") {
     CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
