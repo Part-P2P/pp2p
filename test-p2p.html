@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<script src="https://resources.fcosma.it/js/peer.js"></script>
+<span id='id'></span>
+<input type='text' id='peerid'>
+<button onclick='peerConnect()'>Conn</button>
+<span id='log'></span>
+<script>
+function _(el) {
+  return document.getElementById(el);
+}
+
+var conn;
+
+var peer = new Peer();
+
+peer.on('open', function(id) {
+	_('id').innerHTML = id;
+});
+
+async function peerConnect() {
+  window.conn = peer.connect(document.getElementById('peerid').value);
+ 
+  conn.send('CONNECTED');
+
+  conn.on('open', function() {
+    conn.send('CONN');
+  });
+
+  conn.on('data', function(data) {
+    console.log(data);
+  });
+}
+
+peer.on('connection', function(conn) {
+  conn.on('data', function(data) {
+    console.log(data);
+  });
+});
+</script>
