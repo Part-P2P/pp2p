@@ -42,7 +42,7 @@ class pp2p {
   connect(peer) {
     this.connection = peer.connect(this.id);
     this.connection.on('open', function() {
-      this.connection.send({"scope":"pp2p", "do":"connection" "content":"NIL"});
+      this.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
     });
     this.connection.on('data', function(data) {
       if (JSON.parse(data).scope == "pp2p" && JSON.parse(data).do == "connection" && JSON.parse(data).content == "DONE") {
@@ -82,32 +82,34 @@ class pp2p {
       }
     });
   }
-  
-  this.peer.on('connection', function(connection) {
-    this.connection = connection;
-  });
-
-  this.connection.on('data', function(data) {
-    var get = JSON.parse(data);
-    if (get.scope == "client") {
-      CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
-    } else if (get.scope == "customServer") {
-      if (get.content.type = "GET") {
-        var response = this.getURL(get.content.url);
-        this.connection.send({"scope":"response", "content":response});
-      } else if (get.content.type = "POST") {
-        var response = this.postURL(get.content.url, get.content.headers, get.content.body);
-        this.connection.send({"scope":"response", "content":response});
-      } else {
-        this.log(2, 'Undefined requestType (customServer.type)');
-      }
-    } else if (get.scope == "response") {
-      CommonJS.makeEvent(document, 'serverData', {"detail":get.content});
-    } else if (get.scope == "pp2p" && get.do != undefined) {
-      if (get.do == "ping") {
-        var ping = this.ping();
-        this.connection.send({"scope":"pp2p", "do":"pingResponse", "content":ping});
-      } else if (get.do == "connection") {
-        this.connection.send({"scope":"pp2p", "do":"connection", "content":"DONE");
-                             
 }
+this.peer.on('connection', function(connection) {
+  this.connection = connection;
+});
+
+this.connection.on('data', function(data) {
+  var get = JSON.parse(data);
+  if (get.scope == "client") {
+    CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
+  } else if (get.scope == "customServer") {
+    if (get.content.type = "GET") {
+      var response = this.getURL(get.content.url);
+      this.connection.send({"scope":"response", "content":response});
+    } else if (get.content.type = "POST") {
+      var response = this.postURL(get.content.url, get.content.headers, get.content.body);
+      this.connection.send({"scope":"response", "content":response});
+    } else {
+      this.log(2, 'Undefined requestType (customServer.type)');
+    }
+  } else if (get.scope == "response") {
+    CommonJS.makeEvent(document, 'serverData', {"detail":get.content});
+  } else if (get.scope == "pp2p" && get.do != undefined) {
+    if (get.do == "ping") {
+      var ping = this.ping();
+      this.connection.send({"scope":"pp2p", "do":"pingResponse", "content":ping});
+    } else if (get.do == "connection") {
+      this.connection.send({"scope":"pp2p", "do":"connection", "content":"DONE"});
+                           
+    }
+  }
+});
