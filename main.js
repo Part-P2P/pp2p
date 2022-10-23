@@ -46,6 +46,7 @@ class PP2P {
     this.id = id;
     this.connection = this.peer.connect(this.id);
     this.connection.on('open', function() {
+      this.log(1, 'TypeReference not null!');
       this.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
     });
     this.connection.on('data', function(data) {
