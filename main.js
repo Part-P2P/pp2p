@@ -47,9 +47,12 @@ class PP2P {
     this.connection = this.peer.connect(this.id);
     this.log(1, 'Prepare to ConnectionEvent message');
     var conn = this.connection;
-    this.connection.on('open', sendConnection());
+    this.connection.on('open', function() {
+      sendConnection();
+    });
     function sendConnection() {
-      conn.send('uiwu');
+      conn.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
+      console.log('happ');
     }
     this.connection.on('data', function(data) {
       if (JSON.parse(data).scope == "pp2p" && JSON.parse(data).do == "connection" && JSON.parse(data).content == "DONE") {
