@@ -41,13 +41,17 @@ class PP2P {
     
     window.console.log("[PP2P.js]" + type + " >> " + message);
   }
+  
+  getConnection() {
+    return this.connection;
+  }
  
   connect(id) {
     this.id = id;
     this.connection = this.peer.connect(this.id);
     this.log(1, 'Prepare to ConnectionEvent message');
     this.connection.on('open', function() {
-      this.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
+      this.getConnection().send({"scope":"pp2p", "do":"connection", "content":"NIL"});
       this.log(1, 'ConnectionContent sent');
     });
     this.connection.on('data', function(data) {
