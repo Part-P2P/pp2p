@@ -13,7 +13,18 @@ const PP2P = {
       CommonJS.makeEvent(document, 'pp2pOn', {"detail":id});
     });
     
-    this.peer.on('connection', function(connect) {
+    if (this.connection == undefined) {
+      this.peer.on('connection', function(connect) {
+        this.connection = connect;
+      });
+      
+      this.responseForEventManager();
+    } else {
+      this.responseForEventManager();
+    }
+  },
+      
+  responseForEventManager: function() {
       PP2P.connection = connect;
       connect.on('data', function(data) {
         console.log('GET');
