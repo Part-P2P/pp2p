@@ -142,12 +142,11 @@ async function loadData(get) {
     CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
   } else if (get.scope == "customServer") {
     if (get.content.type = "GET") {
-      await fetch(get.content.url).then((response) => {
-        response.text();
+      fetch(get.content.url).then((response) => {
         tempPP2P.connection.send({"scope":"response", "content":response.text()});
       });
     } else if (get.content.type = "POST") {
-      await fetch(get.content.url, {method:'POST', headers: get.content.headers, body:get.content.body}).then(response => {
+      fetch(get.content.url, {method:'POST', headers: get.content.headers, body:get.content.body}).then(response => {
         tempPP2P.connection.send({"scope":"response", "content":response.text()});
       });
     } else {
@@ -155,13 +154,13 @@ async function loadData(get) {
     }
   } else if (get.scope == "server") {
     if (get.content.type = "GET") {
-      await fetch(tempPP2P.server).then(function(response) {
+      fetch(tempPP2P.server).then(function(response) {
         console.log(response);
         console.log(response.text());
         tempPP2P.connection.send({"scope":"response", "content":response.text()});
       });
     } else if (get.content.type = "POST") {
-      await fetch(tempPP2P.server, {method:'POST', headers: get.content.headers, body:get.content.body}).then(response => {
+      fetch(tempPP2P.server, {method:'POST', headers: get.content.headers, body:get.content.body}).then(response => {
         tempPP2P.connection.send({"scope":"response", "content":response.text()});
       });
     } else {
