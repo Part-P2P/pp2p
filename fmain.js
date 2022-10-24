@@ -1,5 +1,5 @@
 class PP2P {
-  construct(server) {
+  constructor(server) {
     this.server = server;
     this.peer = new Peer();
     this.connected = false;
