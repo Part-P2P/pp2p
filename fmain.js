@@ -129,7 +129,7 @@ const PP2P = {
       this.connection.send({"scope":"client","content":message});
     } else if (scope == "server") {
       if (this.dominant) {
-        var get = JSON.parse(message);
+        var get = message;
         if (get.url == undefined) {
           get.url = this.server;
         }
