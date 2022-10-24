@@ -16,8 +16,7 @@
         return document.getElementById(e);
       }
       
-      const pp2p = PP2P;
-      pp2p.defineServer('https://fcosma.it/ip');
+      const pp2p = new PP2P('https://fcosma.it/ip');
      
       document.addEventListener('pp2pOn', function(el) {
         console.log(el);
@@ -25,10 +24,10 @@
       });
       
       function doConnect() {
-        pp2p.start(_('text').value);
+        pp2p.connect(_('text').value);
       }
       
-      document.addEventListener('client', function(data) {
+      document.addEventListener('clientData', function(data) {
         console.log(data.detail);
       });
       
