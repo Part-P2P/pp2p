@@ -126,7 +126,9 @@ tempPP2P.peer.on('open', function(id) {
 });
 
 tempPP2P.peer.on('connection', function(connection) {
+  tempPP2P.log(1, 'PeerListener started!');
   connection.on('data', function(data) {
+    tempPP2P.log(1, 'DataListener ReC');
     loadData(data);
   });
   
