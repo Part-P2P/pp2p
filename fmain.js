@@ -48,6 +48,7 @@ const PP2P = {
     this.connection = this.peer.connect(this.id);
     this.log(1, 'Prepare to ConnectionEvent message');
     this.connection.on('open', function() {
+      console.log(this);
       this.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
       this.log(1, 'ConnectionMain message sent');
     });
