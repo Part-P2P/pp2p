@@ -54,7 +54,7 @@ const PP2P = {
       PP2P.log(1, 'ConnectionMain message sent');
     });
     this.connection.on('data', function(data) {
-      if (data.scope == "pp2p" && data.do == "connection" && data.content == "DONE" && !firstDone) {
+      if (data.scope == "pp2p" && data.do == "connection" && data.content == "DONE" && !PP2P.firstDone) {
         PP2P.firstDone = true;
         PP2P.log(1, 'Connection enstabilished, now declaring dominant server!');
         PP2P.validateConnection();
