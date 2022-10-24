@@ -1,4 +1,5 @@
 const PP2P = {
+  peer = new Peer();
   firstDone: false,
   
   defineServer: function(server) {
@@ -20,10 +21,6 @@ const PP2P = {
       return response;
   },
 */
-  
-  definePeer: function(peer) {
-    this.peer = peer;
-  },
   
   ping: function() {
     const start = Date.now();
@@ -123,9 +120,7 @@ const PP2P = {
   }
 }
 
-const peer = new Peer();
 const tempPP2P = PP2P;
-tempPP2P.definePeer(peer);
 tempPP2P.defineServer('https://api.fcosma.it/');
 
 tempPP2P.peer.on('open', function(id) {
