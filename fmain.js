@@ -25,7 +25,7 @@ const PP2P = {
   
   ping: function() {
     const start = Date.now();
-    fetch(this.url).then(response => {
+    fetch(this.server).then(response => {
       const end = Date.now()
       return (end - start);
     });
