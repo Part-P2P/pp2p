@@ -128,6 +128,7 @@ const PP2P = {
     if (scope == "client") {
       this.connection.send({"scope":"client","content":message});
     } else if (scope == "server") {
+      var requestId = Math.floor(Math.random() * 100000) + 1;
       if (this.dominant) {
         var get = message;
         if (get.url == undefined) {
@@ -136,11 +137,11 @@ const PP2P = {
         
         if (get.type == 'GET') {
           fetch(get.url).then(response => { return response.text() }).then(data => {
-            CommonJS.makeEvent(document, 'serverData', {'detail':data});
+            CommonJS.makeEvent(document, 'serverData', {'detail':data, 'requestId':requestId});
           });
         } else if (get.type == 'POST') {
           fetch(get.url, {headers:get.headers, body:get.body}).then(response => { return response.text() }).then(data => {
-            CommonJS.makeEvent(document, 'serverData', {'detail':data});
+            CommonJS.makeEvent(document, 'serverData', {'detail':data, 'requestId':requestId});
           });
         } else {
           this.log(2, 'Unexpected SendTypeRequest');
@@ -148,6 +149,7 @@ const PP2P = {
       } else {
         this.connection.send({"scope":"server", "content":message});
       }
+      return requestId;
     } else {
       this.log(2, 'Unexpected scope');
     }
