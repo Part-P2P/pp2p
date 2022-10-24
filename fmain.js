@@ -49,6 +49,7 @@ const PP2P = {
               PP2P.connection.send({"scope":"pp2p", "do":"pingResponse", "content":dit});
             });
           } else if (get.do == "connection") {
+            console.log('debugging');
             PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"DONE"});
           } else if (get.do == "dominant") {
             if (get.do.content) {
