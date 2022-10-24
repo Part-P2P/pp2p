@@ -21,7 +21,7 @@ const PP2P = {
         if (get.scope == "client") {
           CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
         } else if (get.scope == "response") {
-          CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
+          CommonJS.makeEvent(document, 'serverData', {"detail":get.content});
         } else if (get.scope == "server") {
           if (get.content.url == undefined) {
             get.content.url = PP2P.server;
@@ -39,7 +39,7 @@ const PP2P = {
             PP2P.log(2, 'Unexpected ServerConnectionType from remote request');
           }
         } else if (get.scope == "pp2p") {
-          CommonJS.makeEvent(PP2P.internalEvent, 'getPP2PLocalResponse', {"detail":{"do":get.do, "content":get.content}});
+          CommonJS.makeEvent(PP2P, 'getPP2PLocalResponse', {"detail":{"do":get.do, "content":get.content}});
           
           if (get.do == "ping") {
             var prima = Date.now();
@@ -94,14 +94,14 @@ const PP2P = {
       PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
       PP2P.log(1, 'ConnectionMain message sent');
     });
-    PP2P.internalEvent.addEventListener('getPP2PLocalResponse', function(response) {
+    PP2P.addEventListener('getPP2PLocalResponse', function(response) {
       PP2P.connected = true;
       response = response.detail;
       if (response.do == "connection" && response.content == "DONE") {
         PP2P.log(1, 'ConnectionMain responseAsMessage received');
         PP2P.connection.send({"scope":"pp2p", "do":"ping", "content":"ConnectionEnstabilished"});
         PP2P.log(1, 'PingMain message sent');
-        PP2P.internalEvent.addEventListener('getPP2PLocalResponse', function(response) {
+        PP2P.addEventListener('getPP2PLocalResponse', function(response) {
           response = response.detail;
           if (response.do == "pingResponse") {
             if (PP2P.globalPing > response.content) {
