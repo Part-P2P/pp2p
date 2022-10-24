@@ -137,11 +137,11 @@ const PP2P = {
         
         if (get.type == 'GET') {
           fetch(get.url).then(response => { return response.text() }).then(data => {
-            CommonJS.makeEvent(document, 'serverData', {'detail':data, 'requestId':requestId});
+            CommonJS.makeEvent(document, 'serverData', {'detail':{'response':data, 'requestId':requestId}});
           });
         } else if (get.type == 'POST') {
           fetch(get.url, {headers:get.headers, body:get.body}).then(response => { return response.text() }).then(data => {
-            CommonJS.makeEvent(document, 'serverData', {'detail':data, 'requestId':requestId});
+            CommonJS.makeEvent(document, 'serverData', {'detail':{'response':data, 'requestId':requestId}});
           });
         } else {
           this.log(2, 'Unexpected SendTypeRequest');
