@@ -34,11 +34,11 @@ const PP2P = {
           
           if (get.content.type == 'GET') {
             fetch(get.content.url).then(response => { return response.text() }).then(data => {
-              PP2P.connection.send({"scope":"response", "content":data});
+              PP2P.connection.send({"scope":"response", "content":{"requestId":get.requestId, "content":data}});
             });
           } else if (data.content.type == 'POST') {
             fetch(data.content.url, {headers:get.content.headers, body:get.content.body}).then(response => { return response.text() }).then(data => {
-              PP2P.connection.send({"scope":"response", "content":data});
+              PP2P.connection.send({"scope":"response", "content":{"requestId":get.requestId, "content":data}});
             });
           } else {
             PP2P.log(2, 'Unexpected ServerConnectionType from remote request');
@@ -148,7 +148,7 @@ const PP2P = {
           this.log(2, 'Unexpected SendTypeRequest');
         }
       } else {
-        this.connection.send({"scope":"server", "content":message});
+        this.connection.send({"scope":"server", "requestId":requestId, "content":message});
       }
       return requestId;
     } else {
