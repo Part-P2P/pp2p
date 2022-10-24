@@ -40,7 +40,7 @@ const PP2P = function(server) {
     return this.connection;
   }
  
-  this.connect function(id) {
+  this.connect = function(id) {
     this.id = id;
     this.connection = this.peer.connect(this.id);
     this.log(1, 'Prepare to ConnectionEvent message');
