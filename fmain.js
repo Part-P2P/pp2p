@@ -1,30 +1,33 @@
-function PP2P(server) {
-  this.server = server;
-  this.peer = new Peer();
+const PP2P = {
+  peer = new Peer();
   
-  this.getURL = async function(url) {
+  defineServer: function(server) {
+    this.server = server;
+  },
+
+  getURL: async function(url) {
     var response = await fetch(url).then((r)=>{return r.text()});
     console.log(response);
     return response;
-  }
+  },
   
-  this.postURL = async function(url, headers, jsoncontent) {
+  postURL: async function(url, headers, jsoncontent) {
     var response = await fetch(url, {
       method: 'POST',
       headers: headers,
       body: jsoncontent
     }).then((r)=>{return r.text()})
       return response;
-  }
+  },
   
-  this.ping = function() {
+  ping: function() {
     const start = Date.now();
     var res = this.getURL(this.server);
     const end = Date.now()
     return (end - start);
-  }
+  },
   
-  this.log = function(type, message) {
+  log: function(type, message) {
     if (type == 1) {
       var h = "[#INFO]";
     } else if (type == 2) {
@@ -34,13 +37,13 @@ function PP2P(server) {
     }
     
     window.console.log("[PP2P.js]" + type + " >> " + message);
-  }
+  },
   
-  this.getConnection = function() {
+  getConnection: function() {
     return this.connection;
   }
  
-  this.connect = function(id) {
+  connect: function(id) {
     this.id = id;
     this.connection = this.peer.connect(this.id);
     this.log(1, 'Prepare to ConnectionEvent message');
@@ -57,9 +60,9 @@ function PP2P(server) {
         return false;
       }
     });
-  }
+  },
   
-  this.validateConnection = function() {
+  validateConnection: function() {
     if (!this.connection) {
       this.log(2, 'This..connection is NUL / FALSE');
       return;
@@ -84,9 +87,9 @@ function PP2P(server) {
         return this.connection;
       }
     });
-  }
+  },
   
-  this.send = function(scope, message, customServer) {
+  send: function(scope, message, customServer) {
     customServer = customServer ?? '';
     if (scope == "client") {
       this.connection.send({"scope":"client","content":message});
