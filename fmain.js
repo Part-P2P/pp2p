@@ -5,7 +5,7 @@ const PP2P = {
     this.connected = false;
     this.internalEvent = false;
     
-    this.eventHandler();
+    this.responseForEventManager();
   },
   
   eventHandler: function() {
@@ -92,7 +92,6 @@ const PP2P = {
     this.connection = this.peer.connect(this.id);
     this.log(1, 'Prepare to ConnectionEvent message');
     this.connection.on('open', function() {
-      PP2P.responseForEventManager();
       PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
       PP2P.log(1, 'ConnectionMain message sent');
     });
