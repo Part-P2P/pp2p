@@ -53,6 +53,10 @@ const PP2P = {
               var dit = Date.now() - prima;
               PP2P.connection.send({"scope":"pp2p", "do":"pingResponse", "content":dit});
             });
+          } else if (get.do == "connectionResponse" && get.content == "DONE") {
+            CommonJS.makeEvent(window, 'getPP2PLocalResponse_connection');
+          } else if (get.do == "pingResponse") {
+            CommonJS.makeEvent(window, 'getPP2PLocalResponse_ping', {"detail":get.content});
           } else if (get.do == "connection") {
             console.log('debugging');
             PP2P.connection.send({"scope":"pp2p", "do":"connectionResponse", "content":"DONE"});
@@ -101,17 +105,14 @@ const PP2P = {
       PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
       PP2P.log(1, 'ConnectionMain message sent');
     });
-    window.addEventListener('getPP2PLocalResponse', function(response) {
-      PP2P.log(1, 'Message getPP2PLocalResponse..RECEIVED');
+    window.addEventListener('getPP2PLocalResponse_connection', function() {
       PP2P.connected = true;
-      response = response.detail;
-      if (response.do == "connectionResponse" && response.content == "DONE") {
-        PP2P.log(1, 'ConnectionMain responseAsMessage received');
-        PP2P.connection.send({"scope":"pp2p", "do":"ping", "content":"ConnectionEnstabilished"});
-        PP2P.log(1, 'PingMain message sent');
-        window.addEventListener('getPP2PLocalResponse', function(response) {
+      PP2P.log(1, 'ConnectionMain responseAsMessage received');
+      PP2P.connection.send({"scope":"pp2p", "do":"ping", "content":"ConnectionEnstabilished"});
+      PP2P.log(1, 'PingMain message sent');
+      window.addEventListener('getPP2PLocalResponse_ping', function(response) {
           response = response.detail;
-          if (response.do == "pingResponse") {
+          if (response != undefined) {
             if (PP2P.globalPing > response.content) {
               PP2P.dominant = true;
               PP2P.send({"scope":"pp2p", "do":"dominant", "content":false});
