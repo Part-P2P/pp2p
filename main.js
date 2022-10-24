@@ -54,16 +54,15 @@ class PP2P {
       conn.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
       console.log('happ');
     }
-    this.handleData = function(data) {
+    this.connection.on('data', function(data) {
       if (data.scope == "pp2p" && data.do == "connection" && data.content == "DONE") {
-        super.log(1, 'Connection enstabilished, now declaring dominant server!');
-        super.validateConnection();
+        console.log(1, 'Connection enstabilished, now declaring dominant server!');
+        this.validateConnection();
       } else {
-        super.connection = false;
+        this.connection = false;
         return false;
       }
-    }
-    this.connection.on('data', handleData);
+    });
   } 
   
   validateConnection() {
