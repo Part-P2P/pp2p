@@ -1,6 +1,7 @@
 const PP2P = {
   peer: new Peer(),
   main: this,
+  firstDone: false,
   
   defineServer: function(server) {
     this.server = server;
@@ -53,7 +54,8 @@ const PP2P = {
       PP2P.log(1, 'ConnectionMain message sent');
     });
     this.connection.on('data', function(data) {
-      if (data.scope == "pp2p" && data.do == "connection" && data.content == "DONE") {
+      if (data.scope == "pp2p" && data.do == "connection" && data.content == "DONE" && !firstDone) {
+        PP2P.firstDone = true;
         PP2P.log(1, 'Connection enstabilished, now declaring dominant server!');
         PP2P.validateConnection();
         return false;
@@ -63,8 +65,7 @@ const PP2P = {
         return false;
         PP2P.log(3, '2');
       }
-    }
-    return;);
+    });
   },
   
   validateConnection: function() {
