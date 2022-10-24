@@ -59,6 +59,8 @@ const PP2P = {
         PP2P.log(1, 'Connection enstabilished, now declaring dominant server!');
         PP2P.validateConnection();
         return false;
+      } else if (PP2P.firstDone) {
+        PP2P.log(1, '[CommonEvent] >> Disabled');
       } else {
         PP2P.connection = false;
         PP2P.log(2, 'DataScope false - return to ZERO - SCOPE: ' + data.scope + ' - DO: ' + data.do + ' CONTENT: ' + data.content);
