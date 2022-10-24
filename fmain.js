@@ -59,7 +59,7 @@ const PP2P = {
         return true;
       } else {
         PP2P.connection = false;
-        PP2P.log(2, 'DataScope false - return to ZERO');
+        PP2P.log(2, 'DataScope false - return to ZERO - SCOPE: ' + data.scope + ' - DO: ' + data.do + ' CONTENT: ' + data.content);
         return false;
       }
     });
