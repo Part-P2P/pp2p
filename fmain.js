@@ -96,6 +96,7 @@ const PP2P = {
       PP2P.log(1, 'ConnectionMain message sent');
     });
     window.addEventListener('getPP2PLocalResponse', function(response) {
+      PP2P.log(1, 'Message getPP2PLocalResponse..RECEIVED');
       PP2P.connected = true;
       response = response.detail;
       if (response.do == "connection" && response.content == "DONE") {
