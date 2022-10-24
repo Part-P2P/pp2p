@@ -145,7 +145,7 @@ tempPP2P.peer.on('connection', function(connection) {
   }
 });
 
-async function loadData(get) {
+function loadData(get) {
   if (get.scope == "client") {
     CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
   } else if (get.scope == "customServer") {
