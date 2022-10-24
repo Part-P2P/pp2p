@@ -25,8 +25,7 @@ const PP2P = {
   },
       
   responseForEventManager: function() {
-      PP2P.connection = connect;
-      connect.on('data', function(data) {
+      this.connection.on('data', function(data) {
         console.log('GET');
         var get = data;
         if (get.scope == "client") {
@@ -51,7 +50,7 @@ const PP2P = {
           }
         } else if (get.scope == "pp2p") {
           console.log('uw');
-          CommonJS.makeEvent(document, 'getPP2PLocalResponse', {"detail":{"do":get.do, "content":get.content}});
+          CommonJS.makeEvent(window, 'getPP2PLocalResponse', {"detail":{"do":get.do, "content":get.content}});
           
           if (get.do == "ping") {
             var prima = Date.now();
@@ -106,7 +105,7 @@ const PP2P = {
       PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
       PP2P.log(1, 'ConnectionMain message sent');
     });
-    window.document.addEventListener('getPP2PLocalResponse', function(response) {
+    window.addEventListener('getPP2PLocalResponse', function(response) {
       PP2P.log(1, 'Message getPP2PLocalResponse..RECEIVED');
       PP2P.connected = true;
       response = response.detail;
@@ -114,7 +113,7 @@ const PP2P = {
         PP2P.log(1, 'ConnectionMain responseAsMessage received');
         PP2P.connection.send({"scope":"pp2p", "do":"ping", "content":"ConnectionEnstabilished"});
         PP2P.log(1, 'PingMain message sent');
-        window.document.addEventListener('getPP2PLocalResponse', function(response) {
+        window.addEventListener('getPP2PLocalResponse', function(response) {
           response = response.detail;
           if (response.do == "pingResponse") {
             if (PP2P.globalPing > response.content) {
