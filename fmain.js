@@ -41,7 +41,7 @@ const PP2P = {
   
   getConnection: function() {
     return this.connection;
-  }
+  },
  
   connect: function(id) {
     this.id = id;
@@ -100,7 +100,7 @@ const PP2P = {
     } else {
       this.log('Unexpected scope');
     }
-  },
+  }
 }
 
 const tempPP2P = PP2P('https://api.fcosma.it/');
