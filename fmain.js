@@ -50,7 +50,7 @@ const PP2P = {
           if (get.do == "ping") {
             var prima = Date.now();
             fetch(this.server).then(response => {
-              var dit = Date.now() - timeStart;
+              var dit = Date.now() - prima;
               PP2P.connection.send({"scope":"pp2p", "do":"pingResponse", "content":dit});
             });
           } else if (get.do == "connection") {
