@@ -56,6 +56,7 @@ const PP2P = {
       if (data.scope == "pp2p" && data.do == "connection" && data.content == "DONE") {
         PP2P.log(1, 'Connection enstabilished, now declaring dominant server!');
         PP2P.validateConnection();
+        return true;
       } else {
         PP2P.connection = false;
         PP2P.log(2, 'DataScope false - return to ZERO');
