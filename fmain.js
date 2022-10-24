@@ -154,7 +154,7 @@ async function loadData(get) {
     }
   } else if (get.scope == "server") {
     if (get.content.type = "GET") {
-      await fetch(tempPP2P.server).then(response => {
+      await fetch(tempPP2P.server).then(function(response) {
         console.log(response);
         console.log(response.text());
         tempPP2P.connection.send({"scope":"response", "content":response.text()});
