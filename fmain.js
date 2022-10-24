@@ -112,11 +112,11 @@ const PP2P = {
         
         if (PP2P.globalPing > response) {
           PP2P.dominant = true;
-          PP2P.send({"scope":"pp2p", "do":"dominant", "content":false});
+          PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":false});
           PP2P.log(1, 'This client is dominant, sending a non-dominant message to other peer');
         } else {
           PP2P.dominant = false;
-          PP2P.send({"scope":"pp2p", "do":"dominant", "content":true});
+          PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":true});
           PP2P.log(1, 'This client is not dominant, sending a dominant message to other peer');
         }
       });
@@ -132,7 +132,7 @@ const PP2P = {
     } else if (scope == "server") {
       this.connection.send({"scope":"server", "content":message});
     } else {
-      this.log('Unexpected scope');
+      this.log(2, 'Unexpected scope');
     }
   }
 }
