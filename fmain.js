@@ -1,4 +1,4 @@
-const PP2P = function(server) {
+function PP2P(server) {
   this.server = server;
   this.peer = new Peer();
   
@@ -6,7 +6,7 @@ const PP2P = function(server) {
     var response = await fetch(url).then((r)=>{return r.text()});
     console.log(response);
     return response;
-  },
+  }
   
   this.postURL = async function(url, headers, jsoncontent) {
     var response = await fetch(url, {
@@ -15,14 +15,14 @@ const PP2P = function(server) {
       body: jsoncontent
     }).then((r)=>{return r.text()})
       return response;
-  },
+  }
   
   this.ping = function() {
     const start = Date.now();
     var res = this.getURL(this.server);
     const end = Date.now()
     return (end - start);
-  },
+  }
   
   this.log = function(type, message) {
     if (type == 1) {
@@ -34,11 +34,11 @@ const PP2P = function(server) {
     }
     
     window.console.log("[PP2P.js]" + type + " >> " + message);
-  },
+  }
   
   this.getConnection = function() {
     return this.connection;
-  },
+  }
  
   this.connect = function(id) {
     this.id = id;
@@ -57,7 +57,7 @@ const PP2P = function(server) {
         return false;
       }
     });
-  },
+  }
   
   this.validateConnection = function() {
     if (!this.connection) {
@@ -84,7 +84,7 @@ const PP2P = function(server) {
         return this.connection;
       }
     });
-  },
+  }
   
   this.send = function(scope, message, customServer) {
     customServer = customServer ?? '';
