@@ -45,15 +45,15 @@ const PP2P = {
             var prima = Date.now();
             fetch(this.server).then(response => {
               var dit = Date.now() - timeStart;
-              tempPP2P.connection.send({"scope":"pp2p", "do":"pingResponse", "content":dit});
+              PP2P.connection.send({"scope":"pp2p", "do":"pingResponse", "content":dit});
             });
           } else if (get.do == "connection") {
-            tempPP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"DONE"});
+            PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"DONE"});
           } else if (get.do == "dominant") {
             if (get.do.content) {
-              tempPP2P.dominant = true;
+              PP2P.dominant = true;
             } else {
-              tempPP2P.dominant = false;
+              PP2P.dominant = false;
             }
           }          
         }
