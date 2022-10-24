@@ -21,7 +21,6 @@ const PP2P = {
       
   responseForEventManager: function() {
       this.connection.on('data', function(data) {
-        console.log('GET');
         var get = data;
         if (get.scope == "client") {
           CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
@@ -44,7 +43,6 @@ const PP2P = {
             PP2P.log(2, 'Unexpected ServerConnectionType from remote request');
           }
         } else if (get.scope == "pp2p") {
-          console.log('uw');
           CommonJS.makeEvent(window, 'getPP2PLocalResponse', {"detail":{"do":get.do, "content":get.content}});
           
           if (get.do == "ping") {
@@ -58,7 +56,6 @@ const PP2P = {
           } else if (get.do == "pingResponse") {
             CommonJS.makeEvent(window, 'getPP2PLocalResponse_ping', {"detail":get.content});
           } else if (get.do == "connection") {
-            console.log('debugging');
             PP2P.connection.send({"scope":"pp2p", "do":"connectionResponse", "content":"DONE"});
           } else if (get.do == "dominant") {
             if (get.do.content) {
