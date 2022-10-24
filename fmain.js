@@ -49,7 +49,7 @@ const PP2P = {
     this.log(1, 'Prepare to ConnectionEvent message');
     this.connection.on('open', function() {
       console.log(this);
-      this.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
+      PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
       this.log(1, 'ConnectionMain message sent');
     });
     this.connection.on('data', function(data) {
