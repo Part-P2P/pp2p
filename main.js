@@ -151,7 +151,7 @@ const PP2P = {
       }
       return requestId;
     } else {
-      this.log(2, 'Unexpected scope');
+      this.log(2, 'Unexpected scope [2]');
     }
   }
 }
