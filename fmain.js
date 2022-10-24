@@ -16,9 +16,8 @@ const PP2P = {
     if (this.connection == undefined) {
       this.peer.on('connection', function(connect) {
         this.connection = connect;
+        this.responseForEventManager();
       });
-      
-      this.responseForEventManager();
     } else {
       this.responseForEventManager();
     }
