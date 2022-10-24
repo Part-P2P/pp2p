@@ -21,6 +21,7 @@ const PP2P = {
       
   responseForEventManager: function() {
       this.connection.on('data', function(data) {
+        PP2P.connected = true;
         var get = data;
         if (get.scope == "client") {
           CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
