@@ -1,5 +1,5 @@
 const PP2P = {
-  this.peer: new Peer(),
+  peer: new Peer(),
   
   defineServer: function(server) {
     this.server = server;
