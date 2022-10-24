@@ -1,5 +1,5 @@
 const PP2P = {
-  peer: new Peer(),
+  peer = new Peer(),
   firstDone: false,
   
   defineServer: function(server) {
@@ -46,16 +46,8 @@ const PP2P = {
     return this.connection;
   },
  
-  start: function(id) {
-    this.ping();
-    this.id = id;
-    this.connection = this.peer.connect(this.id);
-    this.log(1, 'Prepare to ConnectionEvent message');
-    this.connection.on('open', function() {
-      PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
-      PP2P.log(1, 'ConnectionMain message sent');
-    });
-    this.connection.on('data', function(data) {
+  handleData: function(caller, data) {
+    if (caller == "start") {
       if (data.scope == "pp2p" && data.do == "connection" && data.content == "DONE" && !PP2P.firstDone) {
         PP2P.firstDone = true;
         PP2P.log(1, 'Connection enstabilished, now declaring dominant server!');
@@ -69,19 +61,7 @@ const PP2P = {
         return false;
         // PP2P.log(3, '2');
       }
-    });
-    return;
-  },
-  
-  validateConnection: function() {
-    if (!this.connection) {
-      this.log(2, 'This..connection is NUL / FALSE');
-      return;
-    }
-    
-    this.connection.send({"scope":"pp2p", "do":"ping", "content":"ConnectionEnstabilished"});
-    this.log(1, "PingScope (PP2P) message P2P sent, awaiting response from upstream");
-    this.connection.on('data', function(data) {
+    } else if (caller == "send") {
       if (data.scope == "pp2p" && data.do == "pingResponse") {
         PP2P.log(1, 'Response received, analyzing content');
         var localPing = PP2P.globalPing;
@@ -103,7 +83,29 @@ const PP2P = {
         PP2P.peer.reconnect();
         return PP2P.connection;
       }
+    }
+  },
+
+  start: function(id) {
+    this.ping();
+    this.id = id;
+    this.connection = this.peer.connect(this.id);
+    this.log(1, 'Prepare to ConnectionEvent message');
+    this.connection.on('open', function() {
+      PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
+      PP2P.log(1, 'ConnectionMain message sent');
     });
+    return;
+  },
+  
+  validateConnection: function() {
+    if (!this.connection) {
+      this.log(2, 'This..connection is NUL / FALSE');
+      return;
+    }
+    
+    this.connection.send({"scope":"pp2p", "do":"ping", "content":"ConnectionEnstabilished"});
+    this.log(1, "PingScope (PP2P) message P2P sent, awaiting response from upstream");
   },
   
   send: function(scope, message, customServer) {
@@ -189,3 +191,7 @@ function loadData(get) {
     }
   }
 }
+this.connection.on('data', function(data) {
+  if (data.do == "connection") handleData("start", data);
+  if (data.do == "pingResponse") handleData("send", data);
+})
