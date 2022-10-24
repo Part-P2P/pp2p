@@ -12,17 +12,6 @@ const PP2P = {
     this.peer.on('open', function(id) {
       CommonJS.makeEvent(document, 'pp2pOn', {"detail":id});
     });
-    
-    if (this.connection == undefined) {
-      this.peer.on('connection', function(connect) {
-        PP2P.connection = connect;
-        PP2P.responseForEventManager();
-        PP2P.log(2, 'Repaired error -> empty..PP2P.connection');
-      });
-    } else {
-      PP2P.log(1, 'GoForEvent');
-      this.responseForEventManager();
-    }
   },
       
   responseForEventManager: function() {
@@ -103,6 +92,7 @@ const PP2P = {
     this.connection = this.peer.connect(this.id);
     this.log(1, 'Prepare to ConnectionEvent message');
     this.connection.on('open', function() {
+      PP2P.responseForEventManager();
       PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
       PP2P.log(1, 'ConnectionMain message sent');
     });
