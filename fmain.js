@@ -17,8 +17,10 @@ const PP2P = {
       this.peer.on('connection', function(connect) {
         PP2P.connection = connect;
         PP2P.responseForEventManager();
+        PP2P.log(2, 'Repaired error -> empty..PP2P.connection');
       });
     } else {
+      PP2P.log(1, 'GoForEvent');
       this.responseForEventManager();
     }
   },
