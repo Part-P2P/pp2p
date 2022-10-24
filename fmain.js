@@ -122,7 +122,7 @@ const PP2P = {
               PP2P.log(1, 'This client is not dominant, sending a dominant message to other peer');
             }
           }
-          break;
+          return;
         });
       }
     });
