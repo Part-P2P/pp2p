@@ -146,7 +146,21 @@ async function loadData(get) {
         tempPP2P.connection.send({"scope":"response", "content":response.text()});
       });
     } else if (get.content.type = "POST") {
-      await fetch(this.server, {method:'POST', headers: get.content.headers, body:get.content.body}).then(response => {
+      await fetch(get.content.url, {method:'POST', headers: get.content.headers, body:get.content.body}).then(response => {
+        tempPP2P.connection.send({"scope":"response", "content":response.text()});
+      });
+    } else {
+      tempPP2P.log(2, 'Undefined requestType (customServer.type)');
+    }
+  } else if (get.scope == "server") {
+    if (get.content.type = "GET") {
+      await fetch(tempPP2P.server).then(response => {
+        console.log(response);
+        console.log(response.text());
+        tempPP2P.connection.send({"scope":"response", "content":response.text()});
+      });
+    } else if (get.content.type = "POST") {
+      await fetch(tempPP2P.server, {method:'POST', headers: get.content.headers, body:get.content.body}).then(response => {
         tempPP2P.connection.send({"scope":"response", "content":response.text()});
       });
     } else {
