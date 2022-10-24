@@ -48,16 +48,15 @@ const PP2P = {
     this.connection = this.peer.connect(this.id);
     this.log(1, 'Prepare to ConnectionEvent message');
     this.connection.on('open', function() {
-      console.log(this);
       PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
-      this.log(1, 'ConnectionMain message sent');
+      PP2P.log(1, 'ConnectionMain message sent');
     });
     this.connection.on('data', function(data) {
       if (data.scope == "pp2p" && data.do == "connection" && data.content == "DONE") {
-        this.log(1, 'Connection enstabilished, now declaring dominant server!');
-        this.validateConnection();
+        PP2P.log(1, 'Connection enstabilished, now declaring dominant server!');
+        PP2P.validateConnection();
       } else {
-        this.connection = false;
+        PP2P.connection = false;
         return false;
       }
     });
@@ -73,19 +72,19 @@ const PP2P = {
     this.log(1, "PingScope (PP2P) message P2P sent, awaiting response from upstream");
     this.connection.on('data', function(data) {
       if (data.scope == "pp2p" && data.do == "pingResponse") {
-        this.log(1, 'Response received, analyzing content');
-        var localPing = this.ping();
+        PP2P.log(1, 'Response received, analyzing content');
+        var localPing = PP2P.ping();
         
         if (data.content > localPing) {
-          this.dominant = false;
-          this.connection.send({"scope":"pp2p", "do":"dominant", "content":true});
-          this.log(1, 'Not dominant, send to 2nd client a dominant confirm');
+          PP2P.dominant = false;
+          PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":true});
+          PP2P.log(1, 'Not dominant, send to 2nd client a dominant confirm');
         } else {
-          this.dominant = true;
-          this.connection.send({"scope":"pp2p", "do":"dominant", "content":false});
-          this.log(1, 'Dominant, send to 2nd client a not-dominant confirm');
+          PP2P.dominant = true;
+          PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":false});
+          PP2P.log(1, 'Dominant, send to 2nd client a not-dominant confirm');
         }
-        return this.connection;
+        return PP2P.connection;
       }
     });
   },
