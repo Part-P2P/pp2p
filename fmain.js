@@ -8,8 +8,8 @@ const PP2P = {
   },
 
   getURL: async function(url) {
-    var response = await fetch(url);
-    var fit = await response.text();
+    let response = await fetch(url);
+    let fit = await response.text();
     return fit;
   },
   
