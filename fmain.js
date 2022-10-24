@@ -47,7 +47,7 @@ const PP2P = {
     return this.connection;
   },
  
-  connect: function(id) {
+  start: function(id) {
     this.ping();
     this.id = id;
     this.connection = this.peer.connect(this.id);
