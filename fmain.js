@@ -82,7 +82,7 @@ class PP2P {
   
   getConnection() {
     return this.connection;
-  },
+  }
 
   connect(id) {
     this.ping();
