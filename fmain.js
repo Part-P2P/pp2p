@@ -21,7 +21,7 @@ const PP2P = {
   },
 */
   
-  setPeer: function(peer) {
+  definePeer: function(peer) {
     this.peer = peer;
   }
   
@@ -123,7 +123,9 @@ const PP2P = {
   }
 }
 
+const peer = new Peer();
 const tempPP2P = PP2P;
+tempPP2P.definePeer(peer);
 tempPP2P.defineServer('https://api.fcosma.it/');
 
 tempPP2P.peer.on('open', function(id) {
