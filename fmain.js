@@ -58,6 +58,7 @@ const PP2P = {
         PP2P.validateConnection();
       } else {
         PP2P.connection = false;
+        PP2P.log(2, 'DataScope false - return to ZERO');
         return false;
       }
     });
