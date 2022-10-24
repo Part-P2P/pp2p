@@ -86,6 +86,10 @@ const PP2P = {
         PP2P.log(1, 'Response received, analyzing content');
         var localPing = PP2P.globalPing;
         
+        if (localPing == undefined) {
+          localPing = 5000;
+        }
+        
         if (data.content > localPing) {
           PP2P.dominant = false;
           PP2P.log(1, 'Not dominant, send to 2nd client a dominant confirm');
