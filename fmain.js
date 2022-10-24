@@ -23,7 +23,7 @@ const PP2P = {
   
   definePeer: function(peer) {
     this.peer = peer;
-  }
+  },
   
   ping: function() {
     const start = Date.now();
