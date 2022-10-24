@@ -111,21 +111,18 @@ const PP2P = {
       PP2P.connection.send({"scope":"pp2p", "do":"ping", "content":"ConnectionEnstabilished"});
       PP2P.log(1, 'PingMain message sent');
       window.addEventListener('getPP2PLocalResponse_ping', function(response) {
-          response = response.detail;
-          if (response != undefined) {
-            if (PP2P.globalPing > response.content) {
-              PP2P.dominant = true;
-              PP2P.send({"scope":"pp2p", "do":"dominant", "content":false});
-              PP2P.log(1, 'This client is dominant, sending a non-dominant message to other peer');
-            } else {
-              PP2P.dominant = false;
-              PP2P.send({"scope":"pp2p", "do":"dominant", "content":true});
-              PP2P.log(1, 'This client is not dominant, sending a dominant message to other peer');
-            }
-          }
-          return;
-        });
-      }
+        response = response.detail;
+        
+        if (PP2P.globalPing > response.content) {
+          PP2P.dominant = true;
+          PP2P.send({"scope":"pp2p", "do":"dominant", "content":false});
+          PP2P.log(1, 'This client is dominant, sending a non-dominant message to other peer');
+        } else {
+          PP2P.dominant = false;
+          PP2P.send({"scope":"pp2p", "do":"dominant", "content":true});
+          PP2P.log(1, 'This client is not dominant, sending a dominant message to other peer');
+        }
+      });
     });
   },
 
