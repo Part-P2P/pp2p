@@ -1,6 +1,4 @@
 const PP2P = {
-  peer: new Peer(),
-  main: this,
   firstDone: false,
   
   defineServer: function(server) {
@@ -22,6 +20,10 @@ const PP2P = {
       return response;
   },
 */
+  
+  setPeer: function(peer) {
+    this.peer = peer;
+  }
   
   ping: function() {
     const start = Date.now();
