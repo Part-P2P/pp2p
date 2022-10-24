@@ -56,11 +56,11 @@ const PP2P = {
       if (data.scope == "pp2p" && data.do == "connection" && data.content == "DONE") {
         PP2P.log(1, 'Connection enstabilished, now declaring dominant server!');
         PP2P.validateConnection();
-        return true;
+        break true
       } else {
         PP2P.connection = false;
         PP2P.log(2, 'DataScope false - return to ZERO - SCOPE: ' + data.scope + ' - DO: ' + data.do + ' CONTENT: ' + data.content);
-        return false;
+        break false;
       }
     });
   },
@@ -86,7 +86,7 @@ const PP2P = {
           PP2P.log(1, 'Dominant, send to 2nd client a not-dominant confirm');
         }
         PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":PP2P.dominant});
-        return PP2P.connection;
+        break PP2P.connection;
       }
     });
   },
