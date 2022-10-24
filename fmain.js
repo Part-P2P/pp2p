@@ -1,13 +1,13 @@
-class PP2P {
-  constructor(server) {
+const PP2P = {
+  defineServer: function(server) {
     this.server = server;
     this.peer = new Peer();
     this.connected = false;
     
     this.eventHandler();
-  }
+  },
   
-  eventHandler() {
+  eventHandler: function() {
     this.peer.on('open', function(id) {
       CommonJS.makeEvent(document, 'pp2pOn', {"detail":id});
     });
@@ -58,17 +58,17 @@ class PP2P {
         }
       });
     });
-  }
+  },
   
-  ping() {
+  ping: function() {
     const start = Date.now();
     fetch(this.server).then(response => {
       const end = Date.now();
       PP2P.globalPing = end - start;
     });
-  }
+  },
   
-  log(type, message) {
+  log: function(type, message) {
     if (type == 1) {
       var h = "[#INFO]";
     } else if (type == 2) {
@@ -80,11 +80,11 @@ class PP2P {
     window.console.log("[PP2P.js]" + h + " >> " + message);
   }
   
-  getConnection() {
+  getConnection: function() {
     return this.connection;
-  }
+  },
 
-  connect(id) {
+  connect: function(id) {
     this.ping();
     this.id = id;
     this.connection = this.peer.connect(this.id);
@@ -115,9 +115,9 @@ class PP2P {
         });
       }
     });
-  }
+  },
 
-  send(scope, message, customServer) {
+  send: function(scope, message, customServer) {
     customServer = customServer ?? '';
     if (scope == "client") {
       this.connection.send({"scope":"client","content":message});
