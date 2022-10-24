@@ -37,7 +37,7 @@ const PP2P = {
       var h = "[#UNDEFINED-ERROR]";
     }
     
-    window.console.log("[PP2P.js]" + type + " >> " + message);
+    window.console.log("[PP2P.js]" + h + " >> " + message);
   },
   
   getConnection: function() {
@@ -78,13 +78,12 @@ const PP2P = {
         
         if (data.content > localPing) {
           PP2P.dominant = false;
-          PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":true});
           PP2P.log(1, 'Not dominant, send to 2nd client a dominant confirm');
         } else {
           PP2P.dominant = true;
-          PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":false});
           PP2P.log(1, 'Dominant, send to 2nd client a not-dominant confirm');
         }
+        PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":PP2P.dominant});
         return PP2P.connection;
       }
     });
