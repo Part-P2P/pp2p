@@ -118,6 +118,8 @@ const PP2P = {
         });
       }
     });
+    
+    console.log('OutLoop');
   },
 
   send: function(scope, message, customServer) {
