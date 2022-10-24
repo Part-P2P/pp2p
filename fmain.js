@@ -103,7 +103,8 @@ const PP2P = {
   }
 }
 
-const tempPP2P = PP2P('https://api.fcosma.it/');
+const tempPP2P = PP2P;
+tempPP2P.defineServer('https://api.fcosma.it/');
 
 tempPP2P.peer.on('open', function(id) {
   tempPP2P.myid = id;
