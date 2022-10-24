@@ -39,6 +39,7 @@ const PP2P = {
             PP2P.log(2, 'Unexpected ServerConnectionType from remote request');
           }
         } else if (get.scope == "pp2p") {
+          console.log('uw');
           CommonJS.makeEvent(window, 'getPP2PLocalResponse', {"detail":{"do":get.do, "content":get.content}});
           
           if (get.do == "ping") {
