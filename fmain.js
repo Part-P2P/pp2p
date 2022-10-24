@@ -55,7 +55,7 @@ const PP2P = {
             });
           } else if (get.do == "connection") {
             console.log('debugging');
-            PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"DONE"});
+            PP2P.connection.send({"scope":"pp2p", "do":"connectionResponse", "content":"DONE"});
           } else if (get.do == "dominant") {
             if (get.do.content) {
               PP2P.dominant = true;
@@ -105,7 +105,7 @@ const PP2P = {
       PP2P.log(1, 'Message getPP2PLocalResponse..RECEIVED');
       PP2P.connected = true;
       response = response.detail;
-      if (response.do == "connection" && response.content == "DONE") {
+      if (response.do == "connectionResponse" && response.content == "DONE") {
         PP2P.log(1, 'ConnectionMain responseAsMessage received');
         PP2P.connection.send({"scope":"pp2p", "do":"ping", "content":"ConnectionEnstabilished"});
         PP2P.log(1, 'PingMain message sent');
