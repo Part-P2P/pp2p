@@ -63,7 +63,8 @@ const PP2P = {
         return false;
         PP2P.log(3, '2');
       }
-    });
+    }
+    return;);
   },
   
   validateConnection: function() {
