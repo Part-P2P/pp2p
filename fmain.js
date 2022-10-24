@@ -3,6 +3,7 @@ const PP2P = {
     this.server = server;
     this.peer = new Peer();
     this.connected = false;
+    this.internalEvent;
     
     this.eventHandler();
   },
