@@ -78,7 +78,7 @@ const PP2P = {
     }
     
     window.console.log("[PP2P.js]" + h + " >> " + message);
-  }
+  },
   
   getConnection: function() {
     return this.connection;
