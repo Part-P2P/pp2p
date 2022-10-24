@@ -71,6 +71,7 @@ const PP2P = {
         // PP2P.log(3, '2');
       }
     });
+    return;
   },
   
   validateConnection: function() {
