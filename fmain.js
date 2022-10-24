@@ -123,14 +123,27 @@ const PP2P = {
     });
   },
 
-  send: function(scope, message, customServer) {
+  send: async function(scope, message, customServer) {
     customServer = customServer ?? '';
     if (scope == "client") {
       this.connection.send({"scope":"client","content":message});
-    } else if (scope == "customServer") {
-      this.connection.send({"scope":"customServer", "content":message});
     } else if (scope == "server") {
-      this.connection.send({"scope":"server", "content":message});
+      if (this.dominant) {
+        var get = JSON.parse(message);
+        if (get.url == undefined) {
+          get.url = this.server;
+        }
+        
+        if (get.type == 'GET') {
+          var sys = await fetch(get.url).then(response => { return response.text() }).then(data => { return data; });
+          return sys;
+        } else if (get.type == 'POST') {
+          var sys = await fetch(get.url, {headers:get.headers, body:get.body}).then(response => { return response.text() }).then(data => { return data; });
+          return sys;
+        }
+      } else {
+        this.connection.send({"scope":"server", "content":message});
+      }
     } else {
       this.log(2, 'Unexpected scope');
     }
