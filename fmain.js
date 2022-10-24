@@ -7,6 +7,7 @@ const PP2P = {
     this.server = server;
   },
 
+/*
   getURL: async function(url) {
     var response = await fetch(url).then(response => { return response.text() });
     return response;
@@ -20,12 +21,14 @@ const PP2P = {
     }).then((r)=>{return r.text()})
       return response;
   },
+*/
   
   ping: function() {
     const start = Date.now();
-    var res = this.getURL(this.server);
-    const end = Date.now()
-    return (end - start);
+    fetch(this.url).then(response => {
+      const end = Date.now()
+      return (end - start);
+    });
   },
   
   log: function(type, message) {
