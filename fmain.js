@@ -110,7 +110,7 @@ const PP2P = {
       window.addEventListener('getPP2PLocalResponse_ping', function(response) {
         response = response.detail;
         
-        if (PP2P.globalPing > response.content) {
+        if (PP2P.globalPing > response) {
           PP2P.dominant = true;
           PP2P.send({"scope":"pp2p", "do":"dominant", "content":false});
           PP2P.log(1, 'This client is dominant, sending a non-dominant message to other peer');
