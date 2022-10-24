@@ -99,6 +99,9 @@ const PP2P = {
           PP2P.log(1, 'Dominant, send to 2nd client a not-dominant confirm');
         }
         PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":PP2P.dominant});
+        
+        PP2P.peer.disconnect();
+        PP2P.peer.reconnect();
         return PP2P.connection;
       }
     });
