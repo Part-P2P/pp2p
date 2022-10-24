@@ -3,7 +3,7 @@ const PP2P = {
     this.server = server;
     this.peer = new Peer();
     this.connected = false;
-    this.internalEvent;
+    this.internalEvent = false;
     
     this.eventHandler();
   },
@@ -94,7 +94,7 @@ const PP2P = {
       PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
       PP2P.log(1, 'ConnectionMain message sent');
     });
-    this.internalEvent.addEventListener('getPP2PLocalResponse', function(response) {
+    PP2P.internalEvent.addEventListener('getPP2PLocalResponse', function(response) {
       PP2P.connected = true;
       response = response.detail;
       if (response.do == "connection" && response.content == "DONE") {
