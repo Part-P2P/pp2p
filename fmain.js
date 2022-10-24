@@ -28,6 +28,7 @@ const PP2P = {
     fetch(this.server).then(response => {
       const end = Date.now()
       return (end - start);
+      console.log(end - start);
     });
   },
   
