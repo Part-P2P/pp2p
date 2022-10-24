@@ -8,6 +8,10 @@ class PP2P {
   }
   
   eventHandler() {
+    this.peer.on('open', function(id) {
+      CommonJS.makeEvent(document, 'clientData', {"detail":id});
+    });
+    
     this.peer.on('connection', function(connect) {
       PP2P.connection = connect;
       connect.on('data', function(data) {
