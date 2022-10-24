@@ -115,17 +115,17 @@ const PP2P = {
             if (PP2P.globalPing > response.content) {
               PP2P.dominant = true;
               PP2P.send({"scope":"pp2p", "do":"dominant", "content":false});
+              PP2P.log(1, 'This client is dominant, sending a non-dominant message to other peer');
             } else {
-              PP2P.dominant = true;
-              PP2P.send({"scope":"pp2p", "do":"dominant", "content":false});
+              PP2P.dominant = false;
+              PP2P.send({"scope":"pp2p", "do":"dominant", "content":true});
+              PP2P.log(1, 'This client is not dominant, sending a dominant message to other peer');
             }
           }
-          return;
+          break;
         });
       }
     });
-    
-    console.log('OutLoop');
   },
 
   send: function(scope, message, customServer) {
