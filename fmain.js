@@ -71,7 +71,6 @@ const PP2P = {
           }          
         }
       });
-    });
   },
   
   ping: function() {
