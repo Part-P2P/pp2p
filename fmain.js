@@ -97,7 +97,7 @@ const PP2P = function(server) {
     } else {
       this.log('Unexpected scope');
     }
-  },
+  }
 }
 
 const tempPP2P = PP2P('https://api.fcosma.it/');
