@@ -26,9 +26,8 @@ const PP2P = {
   ping: function() {
     const start = Date.now();
     fetch(this.server).then(response => {
-      const end = Date.now()
-      return (end - start);
-      console.log(end - start);
+      const end = Date.now();
+      PP2P.globalPing = end - start;
     });
   },
   
@@ -49,6 +48,7 @@ const PP2P = {
   },
  
   connect: function(id) {
+    this.ping();
     this.id = id;
     this.connection = this.peer.connect(this.id);
     this.log(1, 'Prepare to ConnectionEvent message');
@@ -84,7 +84,7 @@ const PP2P = {
     this.connection.on('data', function(data) {
       if (data.scope == "pp2p" && data.do == "pingResponse") {
         PP2P.log(1, 'Response received, analyzing content');
-        var localPing = PP2P.ping();
+        var localPing = PP2P.globalPing;
         
         if (data.content > localPing) {
           PP2P.dominant = false;
@@ -136,11 +136,13 @@ function loadData(get) {
     CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
   } else if (get.scope == "customServer") {
     if (get.content.type = "GET") {
-      var response = tempPP2P.getURL(get.content.url);
-      tempPP2P.connection.send({"scope":"response", "content":response});
+      await fetch(get.content.url).then(response => {
+        tempPP2P.connection.send({"scope":"response", "content":response.text()});
+      });
     } else if (get.content.type = "POST") {
-      var response = tempPP2P.postURL(get.content.url, get.content.headers, get.content.body);
-      tempPP2P.connection.send({"scope":"response", "content":response});
+      await fetch(this.server, {method:'POST', headers: get.content.headers, body:get.content.body}).then(response => {
+        tempPP2P.connection.send({"scope":"response", "content":response.text()});
+      });
     } else {
       tempPP2P.log(2, 'Undefined requestType (customServer.type)');
     }
@@ -148,8 +150,11 @@ function loadData(get) {
     CommonJS.makeEvent(document, 'serverData', {"detail":get.content});
   } else if (get.scope == "pp2p" && get.do != undefined) {
     if (get.do == "ping") {
-      var ping = tempPP2P.ping();
-      tempPP2P.connection.send({"scope":"pp2p", "do":"pingResponse", "content":ping});
+      const timeStart = Date.now();
+      fetch(tempPP2P.server).then(response => {
+        var dit = Date.now() - timeStart;
+        tempPP2P.connection.send({"scope":"pp2p", "do":"pingResponse", "content":dit});
+      });
     } else if (get.do == "connection") {
       tempPP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"DONE"});
     } else if (get.do == "dominant") {
