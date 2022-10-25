@@ -90,7 +90,7 @@ const PP2P = {
     var timeStart = Date.now()
     fetch(this.server).then(response => {
       const end = Date.now();
-      PP2P.globalPing = end - start;
+      PP2P.globalPing = end - timeStart;
     });
     this.id = id;
     this.connection = this.peer.connect(this.id);
