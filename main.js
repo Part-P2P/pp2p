@@ -50,7 +50,7 @@ const PP2P = {
             var prima = Date.now();
             fetch(PP2P.server).then(response => {
               var dit = Date.now() - prima;
-              PP2P.connection.send({"scope":"pp2p", "do":"pingResponse", "content":dit});
+              PP2P.connection.send({"scope":"pp2p", "do":"pingResponse", "content":{"isDominant":PP2P.dominant, "value":dit}});
             });
           } else if (get.do == "connectionResponse" && get.content == "DONE") {
             CommonJS.makeEvent(window, 'getPP2PLocalResponse_connection');
@@ -106,40 +106,29 @@ const PP2P = {
       PP2P.connection.send({"scope":"pp2p", "do":"ping", "content":"ConnectionEnstabilished"});
       PP2P.log(1, 'PingMain message sent');
       window.addEventListener('getPP2PLocalResponse_ping', function(response) {
-        response = response.detail;
+        var otherPing = response.detail.value;
+        var otherDom = response.detail.isDominant;
         
-        if (PP2P.globalPing > response) {
-          if (PP2P.dominant == undefined) {
+        if (PP2P.globalPing > otherPing) {
+          if (otherDom == undefined) {
             PP2P.dominant = true;
-            var send = false;
+            PP2P.log(1, 'This client is dominant, sending a not-dominant message to other peer');
+            PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":false});
           } else {
-            if (PP2P.dominant) {
-              var send = false;
-            } else {
-              var send = true;
-            }
+            PP2P.dominant = CommonJS.getOpposite(otherDom);
+            PP2P.log(1, 'Is this client dominant -> ' + PP2P.dominant);
           }
         } else {
-          if (PP2P.dominant == undefined) {
+          if (otherDom == undefined) {
             PP2P.dominant = false;
-            var send = true;
+            PP2P.log(1, 'This client is not dominant, sending a dominant message to other peer');
+            PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":true});
           } else {
-            if (PP2P.dominant) {
-              var send = false;
-            } else {
-              var send = true;
-            }
+            PP2P.dominant = CommonJS.getOpposite(otherDom);
+            PP2P.log(1, 'Is this client dominant -> ' + PP2P.dominant);
           }
         }
-        
-        CommonJS.makeEvent(document, 'pp2pConnected', {'detail':send});
-        PP2P.dominant = false;
-        PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":send});
-        if (send) {
-          PP2P.log(1, 'This client is dominant, sending a not-dominant message to other peer');
-        } else {
-          PP2P.log(1, 'This client is not dominant, sending a dominant message to other peer');
-        }
+        CommonJS.makeEvent(document, 'pp2pConnected', {'detail':{'otherId':PP2P.connection.peer,'isDominant':PP2P.dominant}});
       });
     });
   },
