@@ -59,7 +59,7 @@ const PP2P = {
           } else if (get.do == "connection") {
             PP2P.connection.send({"scope":"pp2p", "do":"connectionResponse", "content":"DONE"});
           } else if (get.do == "dominant") {
-            CommonJS.makeEvent(window, 'pp2pConnected', {'detail':get.content});
+            CommonJS.makeEvent(document, 'pp2pConnected', {'detail':get.content});
             if (get.content) {
               PP2P.dominant = true;
             } else {
@@ -113,12 +113,12 @@ const PP2P = {
         response = response.detail;
         
         if (PP2P.globalPing > response) {
-          CommonJS.makeEvent(window, 'pp2pConnected', {'detail':false});
+          CommonJS.makeEvent(document, 'pp2pConnected', {'detail':false});
           PP2P.dominant = true;
           PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":false});
           PP2P.log(1, 'This client is dominant, sending a non-dominant message to other peer');
         } else {
-          CommonJS.makeEvent(window, 'pp2pConnected', {'detail':false});
+          CommonJS.makeEvent(document, 'pp2pConnected', {'detail':false});
           PP2P.dominant = false;
           PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":true});
           PP2P.log(1, 'This client is not dominant, sending a dominant message to other peer');
