@@ -1,32 +1,76 @@
-class PP2P {
-  constructor(server) {
+const PP2P = {
+  defineServer: function(server) {
     this.server = server;
     this.peer = new Peer();
-  }
+    this.connected = false;
+    this.internalEvent = false;
+    
+    this.eventHandler();
+  },
   
-  async getURL(url) {
-    var response = await fetch(url).then((r)=>{return r.text()});
-    console.log(response);
-    return response;
-  }
+  eventHandler: function() {
+    this.peer.on('open', function(id) {
+      CommonJS.makeEvent(document, 'pp2pOn', {"detail":id});
+    });
+    
+    this.peer.on('connection', function(conn) {
+      PP2P.connection = conn;
+      PP2P.responseForEventManager();
+    });
+  },
+      
+  responseForEventManager: function() {
+      this.connection.on('data', function(data) {
+        PP2P.connected = true;
+        var get = data;
+        if (get.scope == "client") {
+          CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
+        } else if (get.scope == "response") {
+          CommonJS.makeEvent(document, 'serverData', {"detail":get.content});
+        } else if (get.scope == "server") {
+          if (get.content.url == undefined) {
+            get.content.url = PP2P.server;
+          }
+          
+          if (get.content.type == 'GET') {
+            fetch(get.content.url).then(response => { return response.text() }).then(data => {
+              PP2P.connection.send({"scope":"response", "content":{"requestId":get.requestId, "response":data}});
+            });
+          } else if (data.content.type == 'POST') {
+            fetch(data.content.url, {headers:get.content.headers, body:get.content.body}).then(response => { return response.text() }).then(data => {
+              PP2P.connection.send({"scope":"response", "content":{"requestId":get.requestId, "response":data}});
+            });
+          } else {
+            PP2P.log(2, 'Unexpected ServerConnectionType from remote request');
+          }
+        } else if (get.scope == "pp2p") {
+          CommonJS.makeEvent(window, 'getPP2PLocalResponse', {"detail":{"do":get.do, "content":get.content}});
+          
+          if (get.do == "ping") {
+            var prima = Date.now();
+            fetch(PP2P.server).then(response => {
+              var dit = Date.now() - prima;
+              PP2P.connection.send({"scope":"pp2p", "do":"pingResponse", "content":{"isDominant":PP2P.dominant, "value":dit}});
+            });
+          } else if (get.do == "connectionResponse" && get.content == "DONE") {
+            CommonJS.makeEvent(window, 'getPP2PLocalResponse_connection');
+          } else if (get.do == "pingResponse") {
+            CommonJS.makeEvent(window, 'getPP2PLocalResponse_ping', {"detail":get.content});
+          } else if (get.do == "connection") {
+            PP2P.connection.send({"scope":"pp2p", "do":"connectionResponse", "content":"DONE"});
+          } else if (get.do == "dominant") {
+            CommonJS.makeEvent(document, 'pp2pConnected', {'detail':get.content});
+            if (get.content) {
+              PP2P.dominant = true;
+            } else {
+              PP2P.dominant = false;
+            }
+          }          
+        }
+      });
+  },
   
-  async postURL(url, headers, jsoncontent) {
-    var response = await fetch(url, {
-      method: 'POST',
-      headers: headers,
-      body: jsoncontent
-    }).then((r)=>{return r.text()})
-      return response;
-  }
-  
-  ping() {
-    const start = Date.now();
-    var res = this.getURL(this.server);
-    const end = Date.now()
-    return (end - start);
-  }
-  
-  log(type, message) {
+  log: function(type, message) {
     if (type == 1) {
       var h = "[#INFO]";
     } else if (type == 2) {
@@ -35,121 +79,89 @@ class PP2P {
       var h = "[#UNDEFINED-ERROR]";
     }
     
-    window.console.log("[PP2P.js]" + type + " >> " + message);
-  }
-  
-  getConnection() {
-    return this.connection;
-  }
- 
-  connect(id) {
+    window.console.log("[PP2P.js]" + h + " >> " + message);
+  },
+
+  isConnected: function() {
+    return this.pp2p.connection.open;
+  },
+
+  connect: function(id) {
+    var timeStart = Date.now()
+    fetch(this.server).then(response => {
+      const end = Date.now();
+      PP2P.globalPing = end - timeStart;
+    });
     this.id = id;
     this.connection = this.peer.connect(this.id);
     this.log(1, 'Prepare to ConnectionEvent message');
-    var conn = this.connection;
     this.connection.on('open', function() {
-      sendConnection();
+      PP2P.responseForEventManager();
+      PP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
+      PP2P.log(1, 'ConnectionMain message sent');
     });
-    function sendConnection() {
-      conn.send({"scope":"pp2p", "do":"connection", "content":"NIL"});
-      console.log('happ');
-    }
-    this.connection.on('data', function(data) {
-      if (data.scope == "pp2p" && data.do == "connection" && data.content == "DONE") {
-        console.log(1, 'Connection enstabilished, now declaring dominant server!');
-        this.validateConnection();
-      } else {
-        this.connection = false;
-        return false;
-      }
-    });
-  } 
-  
-  validateConnection() {
-    if (!this.connection) {
-      this.log(2, 'This..connection is NUL / FALSE');
-      return;
-    }
-    
-    this.connection.send({"scope":"pp2p", "do":"ping", "content":"ConnectionEnstabilished"});
-    this.log(1, "PingScope (PP2P) message P2P sent, awaiting response from upstream");
-    this.connection.on('data', function(data) {
-      if (data.scope == "pp2p" && data.do == "pingResponse") {
-        this.log(1, 'Response received, analyzing content');
-        var localPing = this.ping();
+    window.addEventListener('getPP2PLocalResponse_connection', function() {
+      PP2P.connected = true;
+      PP2P.log(1, 'ConnectionMain responseAsMessage received');
+      PP2P.connection.send({"scope":"pp2p", "do":"ping", "content":"ConnectionEnstabilished"});
+      PP2P.log(1, 'PingMain message sent');
+      window.addEventListener('getPP2PLocalResponse_ping', function(response) {
+        var otherPing = response.detail.value;
+        var otherDom = response.detail.isDominant;
         
-        if (data.content > localPing) {
-          this.dominant = false;
-          this.connection.send({"scope":"pp2p", "do":"dominant", "content":true});
-          this.log(1, 'Not dominant, send to 2nd client a dominant confirm');
+        if (PP2P.globalPing > otherPing) {
+          if (otherDom == undefined) {
+            PP2P.dominant = true;
+            PP2P.log(1, 'This client is dominant, sending a not-dominant message to other peer');
+            PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":false});
+          } else {
+            PP2P.dominant = CommonJS.getOpposite(otherDom);
+            PP2P.log(1, 'Is this client dominant -> ' + PP2P.dominant);
+          }
         } else {
-          this.dominant = true;
-          this.connection.send({"scope":"pp2p", "do":"dominant", "content":false});
-          this.log(1, 'Dominant, send to 2nd client a not-dominant confirm');
+          if (otherDom == undefined) {
+            PP2P.dominant = false;
+            PP2P.log(1, 'This client is not dominant, sending a dominant message to other peer');
+            PP2P.connection.send({"scope":"pp2p", "do":"dominant", "content":true});
+          } else {
+            PP2P.dominant = CommonJS.getOpposite(otherDom);
+            PP2P.log(1, 'Is this client dominant -> ' + PP2P.dominant);
+          }
         }
-        return this.connection;
-      }
+        CommonJS.makeEvent(document, 'pp2pConnected', {'detail':{'otherId':PP2P.connection.peer,'isDominant':PP2P.dominant}});
+      });
     });
-  }
-  
-  send(scope, message, customServer) {
+  },
+
+  send: function(scope, message, customServer) {
     customServer = customServer ?? '';
     if (scope == "client") {
       this.connection.send({"scope":"client","content":message});
-    } else if (scope == "customServer") {
-      this.connection.send({"scope":"customServer", "content":message});
     } else if (scope == "server") {
-      this.connection.send({"scope":"server", "content":message});
-    } else {
-      this.log('Unexpected scope');
-    }
-  }
-}
-
-const tempPP2P = new PP2P('');
-
-tempPP2P.peer.on('open', function(id) {
-  tempPP2P.myid = id;
-  CommonJS.makeEvent(document, 'pp2pOn', {"detail":id});
-});
-
-tempPP2P.peer.on('connection', function(connection) {
-  connection.on('data', function(data) {
-    loadData(data);
-  });
-  
-  if (tempPP2P.connection == undefined || tempPP2P.connection != connection) {
-    tempPP2P.connection = connection;
-  }
-});
-
-function loadData(get) {
-  if (get.scope == "client") {
-    CommonJS.makeEvent(document, 'clientData', {"detail":get.content});
-  } else if (get.scope == "customServer") {
-    if (get.content.type = "GET") {
-      var response = tempPP2P.getURL(get.content.url);
-      tempPP2P.connection.send({"scope":"response", "content":response});
-    } else if (get.content.type = "POST") {
-      var response = tempPP2P.postURL(get.content.url, get.content.headers, get.content.body);
-      tempPP2P.connection.send({"scope":"response", "content":response});
-    } else {
-      tempPP2P.log(2, 'Undefined requestType (customServer.type)');
-    }
-  } else if (get.scope == "response") {
-    CommonJS.makeEvent(document, 'serverData', {"detail":get.content});
-  } else if (get.scope == "pp2p" && get.do != undefined) {
-    if (get.do == "ping") {
-      var ping = tempPP2P.ping();
-      tempPP2P.connection.send({"scope":"pp2p", "do":"pingResponse", "content":ping});
-    } else if (get.do == "connection") {
-      tempPP2P.connection.send({"scope":"pp2p", "do":"connection", "content":"DONE"});
-    } else if (get.do == "dominant") {
-      if (get.do.content) {
-        tempPP2P.dominant = true;
+      var requestId = Math.floor(Math.random() * 100000) + 1;
+      if (this.dominant) {
+        var get = message;
+        if (get.url == undefined) {
+          get.url = this.server;
+        }
+        
+        if (get.type == 'GET') {
+          fetch(get.url).then(response => { return response.text() }).then(data => {
+            CommonJS.makeEvent(document, 'serverData', {'detail':{'response':data, 'requestId':requestId}});
+          });
+        } else if (get.type == 'POST') {
+          fetch(get.url, {headers:get.headers, body:get.body}).then(response => { return response.text() }).then(data => {
+            CommonJS.makeEvent(document, 'serverData', {'detail':{'response':data, 'requestId':requestId}});
+          });
+        } else {
+          this.log(2, 'Unexpected SendTypeRequest');
+        }
       } else {
-        tempPP2P.dominant = false;
+        this.connection.send({"scope":"server", "requestId":requestId, "content":message});
       }
+      return requestId;
+    } else {
+      this.log(2, 'Unexpected scope [2]');
     }
   }
 }
