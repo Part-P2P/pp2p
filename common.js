@@ -8,10 +8,7 @@ const CommonJS = {
     },
     
     getOpposite: function(bool) {
-        if (bool) {
-            return false;
-        } else {
-            return true;
-        }
+        if (bool) return false;
+        return true;
     }
 }
